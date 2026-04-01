@@ -1,5 +1,5 @@
 name: api_service
-description: "A new Flutter package project."
+description: "Production-grade Flutter network layer — Dio interceptors, secure token storage, retry logic, connectivity checks, and a Result<T> type."
 version: 0.0.1
 homepage:
 

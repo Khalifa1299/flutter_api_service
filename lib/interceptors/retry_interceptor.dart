@@ -13,12 +13,17 @@ class RetryInterceptor extends Interceptor {
     this.baseDelayMs = ApiConfig.retryBaseDelayMs,
   });
 
+  // Only GET/HEAD/OPTIONS are safe to retry — POST/PUT/PATCH/DELETE are not.
+  static const _safeMethods = {'GET', 'HEAD', 'OPTIONS'};
+
   @override
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
+    final method = err.requestOptions.method.toUpperCase();
     final attempt = err.requestOptions.extra['_retryCount'] as int? ?? 0;
 
-    final shouldRetry = attempt < maxRetries &&
+    final shouldRetry = _safeMethods.contains(method) &&
+        attempt < maxRetries &&
         (err.type == DioExceptionType.connectionTimeout ||
             err.type == DioExceptionType.receiveTimeout ||
             err.type == DioExceptionType.connectionError ||
